@@ -70,16 +70,22 @@ def main(): Unit = {
         println("Saisir le stock")
         val stock = StdIn.readInt()
 
+        val produit1 = Produit(nom = nom, description = description, stock = stock)
+        ProduitDAO.insert(produit1)
+      case 4 =>
         var statement: Statement = null
         statement = connection.createStatement()
-        val requete = "INSERT INTO produits " +
-          "(nom, description, stock)" +
-          "VALUES ('" + nom + "', '" + description + "','" + stock + "')"
+        val requete = "SELECT * FROM produits"
 
-        statement.executeUpdate(requete)
+        val result = statement.executeQuery(requete)
 
-      case 4 =>
-
+        while (result.next()) {
+          val id = result.getInt("id")
+          val nom = result.getString("nom")
+          val description = result.getString("description")
+          val stock = result.getInt("stock")
+          println(s"ID: $id, Nom: $nom, Description: $description, Stock: $stock" )
+        }
       case 0 =>
         println("Au revoir")
       case _ =>
