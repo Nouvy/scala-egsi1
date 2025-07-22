@@ -1,4 +1,4 @@
 case class Categorie(
-  id: Int,
+  id: Int = 0,
   nom: String
 )

@@ -23,6 +23,10 @@ def main(): Unit = {
     println("2 - Créer table produit")
     println("3 - Ajouter un produit")
     println("4 - Afficher nos produits")
+    println("5 - Ajouter une catégorie")
+    println("6 - Afficher nos catégories")
+    println("7 - Créer la table categorie")
+    println("8 - Créer table produits_categories")
     println("0 - QUITTER")
     println("Veuillez saisir un nombre")
     choix = StdIn.readInt()
@@ -63,29 +67,51 @@ def main(): Unit = {
         }
 
       case 3 =>
+
         println("Saisir le nom")
         val nom = StdIn.readLine()
         println("Saisir la description")
         val description = StdIn.readLine()
         println("Saisir le stock")
         val stock = StdIn.readInt()
-
-        val produit1 = Produit(nom = nom, description = description, stock = stock)
+        println("Merci de choisir une catgéorie")
+        val categories = CategorieDAO.findAll()
+        categories.foreach { categorie =>
+          println(s"ID: ${categorie.id}, " +
+            s"Nom: ${categorie.nom}, ")
+        }
+        val idCategorie = StdIn.readInt()
+        var categoriesChoisies = List[Categorie]()
+        val categorie = CategorieDAO.find(1)
+        categorie.foreach(c =>
+          categoriesChoisies = c :: categoriesChoisies
+        )
+        val produit1 = Produit(nom = nom, description = description, stock = stock, categories = categoriesChoisies)
         ProduitDAO.insert(produit1)
       case 4 =>
-        var statement: Statement = null
-        statement = connection.createStatement()
-        val requete = "SELECT * FROM produits"
-
-        val result = statement.executeQuery(requete)
-
-        while (result.next()) {
-          val id = result.getInt("id")
-          val nom = result.getString("nom")
-          val description = result.getString("description")
-          val stock = result.getInt("stock")
-          println(s"ID: $id, Nom: $nom, Description: $description, Stock: $stock" )
+        val produits = ProduitDAO.findAll()
+        produits.foreach { produit =>
+          println(s"ID: ${produit.id}, " +
+            s"Nom: ${produit.nom}, " +
+            s"Description: ${produit.description}, " +
+            s"Stock: ${produit.stock}")
         }
+      case 5 =>
+        println("Saisir le nom")
+        val nom = StdIn.readLine()
+
+        val categorie1 = Categorie(nom = nom)
+        CategorieDAO.insert(categorie1)
+      case 6 =>
+        val categories = CategorieDAO.findAll()
+        categories.foreach { categorie =>
+          println(s"ID: ${categorie.id}, " +
+            s"Nom: ${categorie.nom}, ")
+        }
+      case 7 =>
+        CategorieDAO.createTable()
+      case 8 =>
+        ProduitCategorieDAO.createTable()
       case 0 =>
         println("Au revoir")
       case _ =>

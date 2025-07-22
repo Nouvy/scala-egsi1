@@ -3,7 +3,7 @@ case class Produit(
   nom: String,
   description: String,
   stock: Int,
-  //categories: List[Categorie] = List()
+  categories: List[Categorie] = List()
 )
 
 
